@@ -1,0 +1,22 @@
+<html>
+    <title></title>
+<body>
+<div class="back" >
+<form action="" method="POST" class="log-form" style="background-color: grey;width: 20%;margin-left: 30%;padding: 30px;border-radius: 30px;margin-top: 5" novalidate>
+    {% csrf_token%}
+    <h4 style="">Login</h4>
+    {% if form.non_field_errors %}
+    {% for error in form.non_field_errors %}
+        <p class="er">{{error}}</p>
+        {% endfor %}
+    {% endif %}
+    <h1></h1>
+    {% for fm in form %}
+        {{fm.label_tag}} <br>{{fm}} {{fm.errors|striptags}} <br><br>
+    {% endfor %}
+    <input class='btn btn-default' type="submit" value="Login" style="font-weight: bold;color: black">
+    <a class="btn btn-default" href="{% url 'signup' %}" style="color: black"><b>Signup</b></a>
+</form>
+</div>
+</body>
+</html>
