@@ -7,30 +7,28 @@
 </head>
 <body>
 <div class ="row">
-            <div class="col-md-6">
-        <form action="" method="POST">
-            {% csrf_token %}
-            {{aform}}
-            <input type="submit" value="update status">
-        </form>
-            </div>
 
-        <div class="col-md-6">
+        <div class="col-md-10">
 
             <table class="table ">
                 <tr>
+                    <th>Username</th>
                     <th>query</th>
                     <th>status</th>
                 </tr>
                 {% for i in total%}
                 <tr>
-                    <td>{{i.query}}</td>
-                    <td>{{i.status}}</td>
+                    <td>{{i.username}}</td>
+                    <td>{{i.Query}}</td>
+                    <td><a href="update/{{ i.pk }}"> {{i.status}} </a></td>
                 </tr>
                 {% endfor %}
             </table>
 
             </div>
+    <div class="col-md-2">
+        <a href="{% url 'logout' %}" class="btn btn-primary">Logout</a>
+    </div>
     </div>
 </body>
 </html>

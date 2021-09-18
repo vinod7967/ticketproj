@@ -4,10 +4,16 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <style>
+    .Query{
+    width:50px
+    }
+    </style>
+
 </head>
 <body>
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-10" style="">
             <form action="" method="POST">
                 {% csrf_token %}
                 {{tform}}
@@ -15,22 +21,24 @@
             </form>
         </div>
 
-    <div class="col-md-6">
-            {% for i in statu%}
-                {% ifequal i.query details%}
-                    <table class="table">
+
+    <div class="col-md-2">
+        <a href="{% url 'logout' %}" class="btn btn-primary">Logout</a>
+    </div>
+    </div>
+    <div>
+        <table class="table">
                         <tr>
                             <th>query</th>
                             <th>status</th>
                         </tr>
                         <tr>
-                            <td>{{details}}</td>
-                            <td>{{i.status}}</td>
+                            <td>{{details.query}}</td>
+                            <td>{{details.status}}</td>
+
                         </tr>
                     </table>
-                {% endifequal %}
-            {% endfor %}
-    </div>
+
     </div>
 </body>
 </html>

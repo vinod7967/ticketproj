@@ -7,8 +7,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from .models import EmployeeModel, AdminModel
-from .forms import SignupForm, EmployeeModelForm, AdminModelForm
+from .models import EmployeeModel
+from .forms import SignupForm, EmployeeModelForm, AdminModelForm, form_status
 
 
 def signup(request):
@@ -28,10 +28,12 @@ def user_login(request):
         print(request.POST['username'],request.POST['password'])
         if fm.is_valid():
             uname = fm.cleaned_data['username']
+            print(type(uname))
             upass = fm.cleaned_data['password']
             user = authenticate(username=uname,password=upass)
             if user is not None:
                 login(request,user)
+                print("------")
                 return HttpResponseRedirect('/ticket')
         elif str(request.POST['username']) == 'admin' and str(request.POST['password']) == 'admin':
             return HttpResponseRedirect('/adminpage')
@@ -43,25 +45,57 @@ def user_logout(request):
     logout(request)
     return HttpResponseRedirect('/')
 
+# def ticket_rise(request):
+#     if request.method == "POST":
+#         fm = EmployeeModelForm(request.POST)
+#         if fm.is_valid():
+#             qu = fm.cleaned_data['Query']
+#             obj = EmployeeModel(Query=qu,username=request.user)
+#             obj.save()
+#     else:
+#         fm = EmployeeModelForm()
+#     st = EmployeeModel.objects.all()
+#     return render(request,"ticket.html",{'tform':fm,"statu":st})
+
 def ticket_rise(request):
     if request.method == "POST":
         fm = EmployeeModelForm(request.POST)
         if fm.is_valid():
             qu = fm.cleaned_data['Query']
-            obj = EmployeeModel(Query=qu,username=uname)
+            print(request.user)
+            obj = EmployeeModel(Query=qu,username=request.user)
             obj.save()
     else:
         fm = EmployeeModelForm()
-    det = EmployeeModel.objects.select_related('adminmodel').get(username=uname)
-    st = AdminModel.objects.all()
-    print(det)
-    return render(request,"ticket.html",{'tform':fm,"details":det,"statu":st})
-def adminpage(request):
-    if request.method == "POST":
-        fm = AdminModelForm(request.POST)
-        if fm.is_valid():
-            fm.save()
+    if request.user == 'admin':
+        det = EmployeeModel.objects.all()
     else:
-        fm = AdminModelForm()
-    tot = AdminModel.objects.all()
-    return render(request,"admin.html",{"aform":fm,'total':tot})
+        # det = EmployeeModel.objects.all().filter(username=request.user)
+        # print(det)
+        to = EmployeeModel.objects.all()
+        lst = {}
+        for i in to:
+            if str(i.username) == str(request.user):
+                print(i.username)
+                lst['username']=i.username
+                lst['query']=i.Query
+                lst['status']=i.status
+        print(lst)
+    return render(request,"ticket.html",{'tform':fm,"details":lst,"user":request.user,"admin":"admin"})
+
+def adminpage(request):
+    form = EmployeeModel.objects.all()
+    return render(request,"admin.html",{'total':form})
+
+def update(request,id):
+    if request.method == 'POST':
+        stu = EmployeeModel.objects.get(pk=id)
+        form = form_status(request.POST, instance=stu)
+        if form.is_valid():
+            form.save()
+            messages.add_message(request,messages.SUCCESS,'successfully updated!')
+            return HttpResponseRedirect('/adminpage')
+    else:
+        stu = EmployeeModel.objects.get(pk=id)
+        form = form_status(instance=stu)
+    return render(request, 'update.html', {'form': form})

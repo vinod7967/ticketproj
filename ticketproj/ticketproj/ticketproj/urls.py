@@ -25,5 +25,6 @@ urlpatterns = [
     #path('update/<int:id>',views.update,name='update'),
     #path('success/',views.success,name='success'),
     path('logout/',views.user_logout,name='logout'),
-    path('adminpage',views.adminpage,name='admin')
+    path('adminpage',views.adminpage,name='admin'),
+    path('update/<int:id>', views.update, name='update'),
 ]
